@@ -1,5 +1,5 @@
 {% set name = "fastlowess" %}
-{% set version = "0.2.0" %}
+{% set version = "0.3.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 18d5d8fc6b0643991e147f2632a5223dffb238d03781086a339dde5c2aba3133
+  sha256: 7892d0aaba39bf1e547eb7e0deae3498a9cbb59017bf75f3e01fc634c47ae53b
 
 build:
   number: 0
