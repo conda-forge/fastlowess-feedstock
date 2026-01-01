@@ -35,9 +35,10 @@ test:
 
 about:
   home: https://github.com/thisisamirv/fastLowess-py
-  license: AGPL-3.0-only
+  license: MIT AND Apache-2.0
   license_file:
-    - LICENSE
+    - LICENSE-MIT
+    - LICENSE-APACHE
     - THIRDPARTY.yml
   summary: Fast LOWESS implementation in Rust with Python bindings
 
