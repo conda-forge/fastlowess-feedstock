@@ -1,5 +1,5 @@
 {% set name = "fastlowess" %}
-{% set version = "0.3.1" %}
+{% set version = "0.4.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 7892d0aaba39bf1e547eb7e0deae3498a9cbb59017bf75f3e01fc634c47ae53b
+  sha256: d0c713396d45d8d0de5fa52f5ae28d875d962ef1316f7d6c075f8499a89301c9
 
 build:
   number: 0
@@ -35,9 +35,10 @@ test:
 
 about:
   home: https://github.com/thisisamirv/fastLowess-py
-  license: AGPL-3.0-only
+  license: MIT AND Apache-2.0
   license_file:
-    - LICENSE
+    - LICENSE-MIT
+    - LICENSE-APACHE
     - THIRDPARTY.yml
   summary: Fast LOWESS implementation in Rust with Python bindings
 
