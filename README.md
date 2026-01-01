@@ -5,7 +5,7 @@ Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/fastlowess-feed
 
 Home: https://github.com/thisisamirv/fastLowess-py
 
-Package license: AGPL-3.0-only
+Package license: MIT AND Apache-2.0
 
 Summary: Fast LOWESS implementation in Rust with Python bindings
 
