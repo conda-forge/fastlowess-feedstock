@@ -34,13 +34,13 @@ test:
     - fastlowess
 
 about:
-  home: https://github.com/thisisamirv/fastLowess-py
+  home: https://github.com/thisisamirv/lowess-project
   license: MIT AND Apache-2.0
   license_file:
     - LICENSE-MIT
     - LICENSE-APACHE
     - THIRDPARTY.yml
-  summary: Fast LOWESS implementation in Rust with Python bindings
+  summary: High-performance LOWESS smoothing for Rust, Python, and R
 
 extra:
   recipe-maintainers:
