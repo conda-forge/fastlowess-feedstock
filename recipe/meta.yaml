@@ -6,32 +6,78 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: e04678ee211d3ad1d8148b01cfa3558c7b29deddacdea7b85af5dd774ef5ba1b
+  url: https://github.com/thisisamirv/lowess-project/archive/v{{ version }}.tar.gz
+  sha256: 507d6a8da57d7692a5f5cb1417dc5ee17b592b9f8d2a41a5813c19f773d94b1c
 
 build:
   number: 0
-  script:
-    - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
-    - {{ PYTHON }} -m pip install . -vv --no-build-isolation
 
-requirements:
-  build:
-    - {{ compiler('c') }}
-    - {{ stdlib('c') }}
-    - {{ compiler('rust') }}
-    - cargo-bundle-licenses
-  host:
-    - python
-    - pip
-    - maturin >=1.0,<2.0
-  run:
-    - python
-    - numpy >=1.20.0
+outputs:
+  - name: libfastlowess
+    script: build_cpp.sh  # [unix]
+    script: build_cpp.bat  # [win]
+    build:
+      run_exports:
+        - {{ pin_subpackage('libfastlowess', max_pin='x.x') }}
+    requirements:
+      build:
+        - {{ compiler('cxx') }}
+        - {{ stdlib("c") }}
+        - {{ compiler('rust') }}
+        - cmake
+        - make  # [unix]
+        - cargo-bundle-licenses
+    test:
+      commands:
+        - test -f ${PREFIX}/include/fastlowess.hpp  # [unix]
+        - test -f ${PREFIX}/lib/libfastlowess_cpp.so  # [linux]
+        - test -f ${PREFIX}/lib/libfastlowess_cpp.dylib  # [macos]
+        - if not exist %LIBRARY_INC%\\fastlowess.hpp exit 1  # [win]
+        - if not exist %LIBRARY_BIN%\\fastlowess_cpp.dll exit 1  # [win]
+        - if not exist %LIBRARY_LIB%\\fastlowess_cpp.lib exit 1  # [win]
 
-test:
-  imports:
-    - fastlowess
+  - name: fastlowess
+    script: build_py.sh  # [unix]
+    script: build_py.bat  # [win]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib("c") }}
+        - {{ compiler('rust') }}
+        - cargo-bundle-licenses
+      host:
+        - python
+        - pip
+        - maturin >=1.0,<2.0
+      run:
+        - python
+        - numpy >=1.20.0
+    test:
+      imports:
+        - fastlowess
+
+  - name: r-fastlowess
+    script: build_r.sh  # [unix]
+    script: build_r.bat  # [win]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib("c") }}
+        - {{ compiler('rust') }}
+        - make  # [unix]
+        - python
+        - tomli
+        - tomli-w
+      host:
+        - r-base
+        - r-rcpp
+      run:
+        - r-base
+        - r-rcpp
+    test:
+      commands:
+        - $R -e "library('rfastlowess')"  # [not win]
+        - "\"%R%\" -e \"library('rfastlowess')\""  # [win]
 
 about:
   home: https://github.com/thisisamirv/lowess-project
