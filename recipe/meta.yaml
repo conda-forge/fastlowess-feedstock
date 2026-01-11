@@ -27,6 +27,14 @@ outputs:
         - cmake
         - make  # [unix]
         - cargo-bundle-licenses
+    test:
+      commands:
+        - test -f ${PREFIX}/include/fastlowess.hpp  # [unix]
+        - test -f ${PREFIX}/lib/libfastlowess_cpp.so  # [linux]
+        - test -f ${PREFIX}/lib/libfastlowess_cpp.dylib  # [macos]
+        - if not exist %LIBRARY_INC%\\fastlowess.hpp exit 1  # [win]
+        - if not exist %LIBRARY_BIN%\\fastlowess_cpp.dll exit 1  # [win]
+        - if not exist %LIBRARY_LIB%\\fastlowess_cpp.lib exit 1  # [win]
 
   - name: fastlowess
     script: build_py.sh  # [unix]
