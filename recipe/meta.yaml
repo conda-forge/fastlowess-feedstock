@@ -21,17 +21,20 @@ outputs:
         - {{ pin_subpackage('libfastlowess', max_pin='x.x') }}
     requirements:
       build:
-        - {{ compiler('cxx') }}
+        - {{ compiler('cxx') }}        # [not win]
+        - vs2019_win-64                # [win]
         - {{ stdlib("c") }}
         - {{ compiler('rust') }}
         - cmake
         - make  # [unix]
+        - ninja  # [win]
         - cargo-bundle-licenses
+        - python
     test:
       commands:
         - test -f ${PREFIX}/include/fastlowess.hpp  # [unix]
-        - test -f ${PREFIX}/lib/libfastlowess_cpp.so  # [linux]
-        - test -f ${PREFIX}/lib/libfastlowess_cpp.dylib  # [macos]
+        - test -f ${PREFIX}/lib/libfastlowess.so  # [linux]
+        - test -f ${PREFIX}/lib/libfastlowess.dylib  # [macos]
         - if not exist %LIBRARY_INC%\\fastlowess.hpp exit 1  # [win]
         - if not exist %LIBRARY_BIN%\\fastlowess_cpp.dll exit 1  # [win]
         - if not exist %LIBRARY_LIB%\\fastlowess_cpp.lib exit 1  # [win]
@@ -41,10 +44,12 @@ outputs:
     script: build_py.bat  # [win]
     requirements:
       build:
-        - {{ compiler('c') }}
+        - {{ compiler('c') }}       # [not win]
+        - vs2019_win-64             # [win]
         - {{ stdlib("c") }}
         - {{ compiler('rust') }}
         - cargo-bundle-licenses
+        - python
       host:
         - python
         - pip
@@ -59,21 +64,29 @@ outputs:
   - name: r-fastlowess
     script: build_r.sh  # [unix]
     script: build_r.bat  # [win]
+    build:
+      ignore_run_exports:
+        - r-base
+      missing_dso_whitelist:
+        - "*/libR.so"
+      rpaths:
+        - lib/R/lib/
     requirements:
       build:
-        - {{ compiler('c') }}
+        - {{ compiler('c') }}       # [not win]
+        - vs2019_win-64             # [win]
         - {{ stdlib("c") }}
         - {{ compiler('rust') }}
-        - make  # [unix]
+        - make
+        - m2-xz  # [win]
+        - m2-sed  # [win]
         - python
         - tomli
         - tomli-w
       host:
-        - r-base
-        - r-rcpp
+        - r-base >=4.2
       run:
-        - r-base
-        - r-rcpp
+        - r-base >=4.2
     test:
       commands:
         - $R -e "library('rfastlowess')"  # [not win]
