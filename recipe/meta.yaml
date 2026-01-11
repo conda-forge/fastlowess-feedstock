@@ -1,5 +1,5 @@
 {% set name = "fastlowess" %}
-{% set version = "0.99.7" %}
+{% set version = "0.99.8" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/thisisamirv/lowess-project/archive/v{{ version }}.tar.gz
-  sha256: 0fb34cc1f06cf38116505316c47d3beb990df393ebea68396fd3fb1d559c56de
+  sha256: 507d6a8da57d7692a5f5cb1417dc5ee17b592b9f8d2a41a5813c19f773d94b1c
 
 build:
   number: 0
