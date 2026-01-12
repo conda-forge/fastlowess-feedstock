@@ -41,6 +41,7 @@ with open('Cargo.toml', 'w') as f:
 # Remove Cargo.lock to force regeneration to match truncated workspace
 rm -f Cargo.lock
 
+
 # ===============================================================
 # Out-of-source build
 # ===============================================================
@@ -52,7 +53,7 @@ cd "$BUILD_DIR"
 # ===============================================================
 # Configure
 # ===============================================================
-cmake "${CMAKE_ARGS}" \
+cmake ${CMAKE_ARGS} \
     -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
