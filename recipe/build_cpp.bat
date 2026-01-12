@@ -14,19 +14,6 @@ set TMPDIR=C:\tmp
 :: ===============================================================
 if exist build_cpp rmdir /S /Q build_cpp
 mkdir build_cpp || exit /b 1
-cd build_cpp || exit /b 1
-
-:: ===============================================================
-:: Toolchain sanity checks
-:: ===============================================================
-where cmake >nul 2>&1 || (echo ERROR: cmake not found! & exit /b 1)
-where ninja >nul 2>&1 || (echo ERROR: ninja not found! & exit /b 1)
-
-:: ===============================================================
-:: Shared Rust / Cargo cache (reuse Rust builds across outputs)
-:: ===============================================================
-set CARGO_TERM_COLOR=never
-set RUST_BACKTRACE=1
 
 :: ===============================================================
 :: Modify Cargo.toml to exclude irrelevant bindings (dependency-free Python)
@@ -45,6 +32,30 @@ echo             if l.strip().startswith(']'): im = False >> rewrite.py
 echo             continue >> rewrite.py
 echo         f.write(l) >> rewrite.py
 python rewrite.py
+
+cd build_cpp || exit /b 1
+
+:: ===============================================================
+:: Activate MSVC (Required for Ninja)
+:: ===============================================================
+where cl.exe /q || (
+  echo [%DATE% %TIME%] MSVC not in PATH, attempting to locate vcvarsall.bat...
+  for /f "usebackq tokens=*" %%i in (`vswhere.exe -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do (
+    set "VSINSTALLDIR=%%i"
+  )
+  if exist "!VSINSTALLDIR!\VC\Auxiliary\Build\vcvarsall.bat" (
+    echo [%DATE% %TIME%] Found vcvarsall.bat at "!VSINSTALLDIR!\VC\Auxiliary\Build\vcvarsall.bat"
+    call "!VSINSTALLDIR!\VC\Auxiliary\Build\vcvarsall.bat" x64
+  ) else (
+    echo WARNING: vcvarsall.bat not found. CMake might fail to find the compiler.
+  )
+)
+
+:: ===============================================================
+:: Toolchain sanity checks
+:: ===============================================================
+where cmake >nul 2>&1 || (echo ERROR: cmake not found! & exit /b 1)
+where ninja >nul 2>&1 || (echo ERROR: ninja not found! & exit /b 1)
 
 :: ===============================================================
 :: Configure C++ bindings

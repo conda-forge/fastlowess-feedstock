@@ -20,6 +20,22 @@ echo         f.write(l) >> rewrite.py
 python rewrite.py
 
 :: ===============================================================
+:: Activate MSVC (Required for Ninja/Rust components)
+:: ===============================================================
+where cl.exe /q || (
+  echo [%DATE% %TIME%] MSVC not in PATH, attempting to locate vcvarsall.bat...
+  for /f "usebackq tokens=*" %%i in (`vswhere.exe -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do (
+    set "VSINSTALLDIR=%%i"
+  )
+  if exist "!VSINSTALLDIR!\VC\Auxiliary\Build\vcvarsall.bat" (
+    echo [%DATE% %TIME%] Found vcvarsall.bat at "!VSINSTALLDIR!\VC\Auxiliary\Build\vcvarsall.bat"
+    call "!VSINSTALLDIR!\VC\Auxiliary\Build\vcvarsall.bat" x64
+  ) else (
+    echo WARNING: vcvarsall.bat not found. Build might fail if cl.exe is required.
+  )
+)
+
+:: ===============================================================
 :: Navigate to Python bindings
 :: ===============================================================
 cd bindings\python || exit /b 1
