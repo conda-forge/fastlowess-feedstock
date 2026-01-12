@@ -41,7 +41,6 @@ with open('Cargo.toml', 'w') as f:
 # Remove Cargo.lock to force regeneration to match truncated workspace
 rm -f Cargo.lock
 
-
 # ===============================================================
 # Out-of-source build
 # ===============================================================
