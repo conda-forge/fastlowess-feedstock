@@ -50,9 +50,17 @@ python rewrite.py
 :: Configure C++ bindings
 :: ===============================================================
 echo [%DATE% %TIME%] Configuring C++ bindings...
+
+:: Remove -A and -T flags as they are incompatible with the Ninja generator
+set "CMAKE_ARGS=%CMAKE_ARGS:-A x64=%"
+set "CMAKE_ARGS=%CMAKE_ARGS:-T v142=%"
+set "CMAKE_ARGS=%CMAKE_ARGS:-T v141=%"
+
 cmake ^
   %CMAKE_ARGS% ^
   -G "Ninja" ^
+  -DCMAKE_C_COMPILER=cl.exe ^
+  -DCMAKE_CXX_COMPILER=cl.exe ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
   -DCMAKE_INSTALL_LIBDIR=lib ^
