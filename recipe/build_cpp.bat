@@ -45,16 +45,8 @@ where cmake >nul 2>&1 || (echo ERROR: cmake not found! & exit /b 1)
 :: ===============================================================
 echo [%DATE% %TIME%] Configuring C++ bindings...
 
-:: Remove -A and -T flags as they are incompatible with the Ninja generator
-set "CMAKE_ARGS=%CMAKE_ARGS:-A x64=%"
-set "CMAKE_ARGS=%CMAKE_ARGS:-T v142=%"
-set "CMAKE_ARGS=%CMAKE_ARGS:-T v141=%"
-
 cmake ^
   %CMAKE_ARGS% ^
-  -G "NMake Makefiles" ^
-  -DCMAKE_C_COMPILER="%CC%" ^
-  -DCMAKE_CXX_COMPILER="%CXX%" ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
   -DCMAKE_INSTALL_LIBDIR=lib ^

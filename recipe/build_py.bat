@@ -60,12 +60,6 @@ set RUST_BACKTRACE=1
 :: ===============================================================
 echo [%DATE% %TIME%] Installing Python package...
 
-:: Remove -A and -T flags as they are incompatible with the Ninja generator
-:: and can affect sub-builds that use CMake (e.g. via maturin/corrosion)
-set "CMAKE_ARGS=%CMAKE_ARGS:-A x64=%"
-set "CMAKE_ARGS=%CMAKE_ARGS:-T v142=%"
-set "CMAKE_ARGS=%CMAKE_ARGS:-T v141=%"
-
 "%PYTHON%" -m pip install . -vv --no-build-isolation --no-deps || exit /b 1
 
 :: ===============================================================
