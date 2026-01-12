@@ -48,8 +48,6 @@ with open('Cargo.toml', 'w') as f:
         f.write(line)
 "
 
-
-
 # Remove Cargo.lock to force regeneration to match truncated workspace
 rm -f Cargo.lock
 
