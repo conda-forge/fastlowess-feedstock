@@ -38,7 +38,7 @@ echo     im = False >> rewrite.py
 echo     for l in lines: >> rewrite.py
 echo         if l.strip().startswith('members = ['): >> rewrite.py
 echo             im = True >> rewrite.py
-echo             f.write('members = [\"crates/loess-rs\", \"crates/fastLoess\", \"bindings/cpp\"]\n') >> rewrite.py
+echo             f.write('members = [\"crates/lowess\", \"crates/fastLowess\", \"bindings/cpp\"]\n') >> rewrite.py
 echo             continue >> rewrite.py
 echo         if im: >> rewrite.py
 echo             if l.strip().startswith(']'): im = False >> rewrite.py

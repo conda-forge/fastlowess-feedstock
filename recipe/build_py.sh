@@ -36,8 +36,8 @@ with open('Cargo.toml', 'w') as f:
         if line.strip().startswith('members = ['):
             in_members = True
             f.write('members = [\n')
-            f.write('    \"crates/loess-rs\",\n')
-            f.write('    \"crates/fastLoess\",\n')
+            f.write('    \"crates/lowess\",\n')
+            f.write('    \"crates/fastLowess\",\n')
             f.write('    \"bindings/python\",\n')
             f.write(']\n')
             continue
@@ -48,10 +48,7 @@ with open('Cargo.toml', 'w') as f:
         f.write(line)
 "
 
-# DEBUG: Print Cargo.toml to verify correctness
-echo "=== Debug: Cargo.toml content ==="
-cat Cargo.toml
-echo "================================"
+
 
 # Remove Cargo.lock to force regeneration to match truncated workspace
 rm -f Cargo.lock
