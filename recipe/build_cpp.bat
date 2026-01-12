@@ -1,7 +1,7 @@
 mkdir build_cpp
 cd build_cpp
 
-cmake -G "NMake Makefiles" ^
+cmake -G "Ninja" ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
     -DCMAKE_INSTALL_LIBDIR=lib ^
