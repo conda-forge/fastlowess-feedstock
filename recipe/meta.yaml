@@ -13,80 +13,99 @@ build:
   number: 0
 
 outputs:
+  # ===============================================================
+  # C++ library
+  # ===============================================================
   - name: libfastlowess
     script: build_cpp.sh  # [unix]
     script: build_cpp.bat  # [win]
     build:
       run_exports:
-        - {{ pin_subpackage('libfastlowess', max_pin='x.x') }}
+        - {{ pin_subpackage("libfastlowess", max_pin="x.x") }}
     requirements:
       build:
-        - {{ compiler('cxx') }}
+        - {{ compiler("cxx") }}
         - {{ stdlib("c") }}
-        - {{ compiler('rust') }}
+        - {{ compiler("rust") }}
         - cmake
+        - ninja
         - make  # [unix]
         - cargo-bundle-licenses
     test:
       commands:
         - test -f ${PREFIX}/include/fastlowess.hpp  # [unix]
-        - test -f ${PREFIX}/lib/libfastlowess_cpp.so  # [linux]
-        - test -f ${PREFIX}/lib/libfastlowess_cpp.dylib  # [macos]
+        - test -f ${PREFIX}/lib/libfastlowess.so  # [linux]
+        - test -f ${PREFIX}/lib/libfastlowess.dylib  # [osx]
         - if not exist %LIBRARY_INC%\\fastlowess.hpp exit 1  # [win]
         - if not exist %LIBRARY_BIN%\\fastlowess_cpp.dll exit 1  # [win]
         - if not exist %LIBRARY_LIB%\\fastlowess_cpp.lib exit 1  # [win]
 
+  # ===============================================================
+  # Python package
+  # ===============================================================
   - name: fastlowess
     script: build_py.sh  # [unix]
     script: build_py.bat  # [win]
     requirements:
       build:
-        - {{ compiler('c') }}
+        - {{ compiler("c") }}
         - {{ stdlib("c") }}
-        - {{ compiler('rust') }}
+        - {{ compiler("rust") }}
         - cargo-bundle-licenses
       host:
         - python
         - pip
+        - setuptools
+        - wheel
         - maturin >=1.0,<2.0
       run:
         - python
-        - numpy >=1.20.0
+        - numpy >=1.20
     test:
       imports:
         - fastlowess
 
+  # ===============================================================
+  # R package
+  # ===============================================================
   - name: r-fastlowess
     script: build_r.sh  # [unix]
     script: build_r.bat  # [win]
+    build:
+      ignore_run_exports:
+        - r-base
+      missing_dso_whitelist:
+        - "*/libR.so"
+      rpaths:
+        - lib/R/lib/
     requirements:
       build:
-        - {{ compiler('c') }}
+        - {{ compiler("c") }}
         - {{ stdlib("c") }}
-        - {{ compiler('rust') }}
+        - {{ compiler("rust") }}
         - make  # [unix]
+        - m2-xz  # [win]
+        - m2-sed  # [win]
         - python
         - tomli
         - tomli-w
       host:
-        - r-base
-        - r-rcpp
+        - r-base >=4.2
       run:
-        - r-base
-        - r-rcpp
+        - r-base >=4.2
     test:
       commands:
-        - $R -e "library('rfastlowess')"  # [not win]
+        - $R -e "library('rfastlowess')"  # [unix]
         - "\"%R%\" -e \"library('rfastlowess')\""  # [win]
 
 about:
   home: https://github.com/thisisamirv/lowess-project
-  license: MIT AND Apache-2.0
+  license: MIT OR Apache-2.0
   license_file:
     - LICENSE-MIT
     - LICENSE-APACHE
     - THIRDPARTY.yml
-  summary: High-performance LOWESS smoothing for Rust, Python, and R
+  summary: High-performance LOWESS smoothing for Rust, Python, R, and C++
 
 extra:
   recipe-maintainers:
