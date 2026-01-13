@@ -1,6 +1,0 @@
-rust_compiler_version:
-  - 1.85 # [win]
-c_compiler_version:
-  - 17 # [win]
-cxx_compiler_version:
-  - 17 # [win]
