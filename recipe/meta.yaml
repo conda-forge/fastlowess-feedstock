@@ -1,13 +1,13 @@
 {% set name = "fastlowess" %}
-{% set version = "0.99.8" %}
+{% set version = "0.99.7" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://github.com/thisisamirv/lowess-project/archive/v{{ version }}.tar.gz
-  sha256: 507d6a8da57d7692a5f5cb1417dc5ee17b592b9f8d2a41a5813c19f773d94b1c
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d0b075660b4cc5eb392f13e1a6d0602e07b230880ea0606f8fb92c07b84ac517
 
 build:
   number: 0
