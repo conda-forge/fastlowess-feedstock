@@ -33,16 +33,19 @@ requirements:
 outputs:
   # ----------------------------------------------------------------------------
   # Output 1: R Package (r-rfastlowess)
+  # Note: Skip on Windows because Conda's Rust (MSVC) cannot compile for GNU
+  # target needed by Conda R (MinGW-GCC). Windows users can use Rtools/CRAN.
   # ----------------------------------------------------------------------------
   - name: r-rfastlowess
     build:
+      skip: true  # [win]
       missing_dso_whitelist:
         - "*/libR.so"
       script:
         - cd bindings/r
         # Extract vendored dependencies before R CMD INSTALL runs configure
         - cd src && tar --extract --xz -f vendor.tar.xz && cd ..
-        # This ensures configure and cargo use the same library path
+        # Unset CARGO_BUILD_TARGET to ensure configure and cargo use the same library path
         - unset CARGO_BUILD_TARGET && $R CMD INSTALL --build .
     requirements:
       build:
