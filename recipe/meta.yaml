@@ -1,46 +1,136 @@
 {% set name = "fastlowess" %}
-{% set version = "0.99.7" %}
+{% set version = "0.99.8" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
+# ==============================================================================
+# Source Configuration
+# ==============================================================================
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: d0b075660b4cc5eb392f13e1a6d0602e07b230880ea0606f8fb92c07b84ac517
+  url: https://github.com/thisisamirv/lowess-project/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 507d6a8da57d7692a5f5cb1417dc5ee17b592b9f8d2a41a5813c19f773d94b1c
 
 build:
   number: 0
-  script:
-    - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
-    - {{ PYTHON }} -m pip install . -vv --no-build-isolation
 
+# ==============================================================================
+# Global Build Requirements
+# ==============================================================================
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ stdlib('c') }}
     - {{ compiler('rust') }}
     - cargo-bundle-licenses
-  host:
-    - python
-    - pip
-    - maturin >=1.0,<2.0
-  run:
-    - python
-    - numpy >=1.20.0
+    - pkg-config
+    - make
 
-test:
-  imports:
-    - fastlowess
+# ==============================================================================
+# Multi-Output Package Definitions
+# ==============================================================================
+outputs:
+  # ----------------------------------------------------------------------------
+  # Output 1: R Package (r-rfastlowess)
+  # Note: Skip on Windows because Conda's Rust (MSVC) cannot compile for GNU
+  # target needed by Conda R (MinGW-GCC). Windows users can use Rtools/CRAN.
+  # ----------------------------------------------------------------------------
+  - name: r-rfastlowess
+    build:
+      skip: true  # [win]
+      missing_dso_whitelist:
+        - "*/libR.so"
+      script:
+        - cd bindings/r
+        # Extract vendored dependencies before R CMD INSTALL runs configure
+        - cd src && tar --extract --xz -f vendor.tar.xz && cd ..
+        # Unset CARGO_BUILD_TARGET to ensure configure and cargo use the same library path
+        - unset CARGO_BUILD_TARGET && $R CMD INSTALL --build .
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib('c') }}
+        - {{ compiler('rust') }}
+      host:
+        - r-base >=4.3
+      run:
+        - r-base >=4.3
+    test:
+      commands:
+        - $R -e "library('rfastlowess')"
 
+  # ----------------------------------------------------------------------------
+  # Output 2: Python Package (fastlowess)
+  # ----------------------------------------------------------------------------
+  - name: fastlowess
+    build:
+      script:
+        # Build python package using maturin
+        - cd bindings/python
+        - $PYTHON -m pip install . -vv --no-build-isolation
+        - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib('c') }}
+        - {{ compiler('rust') }}
+        - cargo-bundle-licenses
+      host:
+        - python
+        - pip
+        - maturin >=1.0,<2.0
+      run:
+        - python
+        - numpy >=1.20.0
+    test:
+      imports:
+        - fastlowess
+
+  # ----------------------------------------------------------------------------
+  # Output 3: C++ Library (libfastlowess)
+  # ----------------------------------------------------------------------------
+  - name: libfastlowess
+    build:
+      script:
+        - cd bindings/cpp
+        - cargo build --release
+        # Install headers and libs to PREFIX (use platform-appropriate commands)
+        - mkdir -p $PREFIX/lib  # [unix]
+        - mkdir -p $PREFIX/include  # [unix]
+        - if not exist "%PREFIX%\\Library\\lib" mkdir "%PREFIX%\\Library\\lib"  # [win]
+        - if not exist "%PREFIX%\\Library\\bin" mkdir "%PREFIX%\\Library\\bin"  # [win]
+        - if not exist "%PREFIX%\\Library\\include" mkdir "%PREFIX%\\Library\\include"  # [win]
+        - find ../../target -name "libfastlowess_cpp.so" -type f -exec cp {} $PREFIX/lib/libfastlowess.so \;  # [linux]
+        - find ../../target -name "libfastlowess_cpp.dylib" -type f -exec cp {} $PREFIX/lib/libfastlowess.dylib \;  # [osx]
+        - copy ..\\..\\target\\release\\fastlowess_cpp.dll "%PREFIX%\\Library\\bin\\fastlowess.dll"  # [win]
+        - copy ..\\..\\target\\release\\fastlowess_cpp.dll.lib "%PREFIX%\\Library\\lib\\fastlowess.lib"  # [win]
+        - cp include/fastlowess.h $PREFIX/include/  # [unix]
+        - copy include\\fastlowess.h "%PREFIX%\\Library\\include\\"  # [win]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ stdlib('c') }}
+        - {{ compiler('rust') }}
+    test:
+      commands:
+        - test -f $PREFIX/include/fastlowess.h  # [unix]
+        - test -f $PREFIX/lib/libfastlowess.so  # [linux]
+        - if not exist "%PREFIX%\\Library\\include\\fastlowess.h" exit 1  # [win]
+
+# ==============================================================================
+# Package Metadata & Maintainers
+# ==============================================================================
 about:
   home: https://github.com/thisisamirv/lowess-project
   license: MIT AND Apache-2.0
   license_file:
     - LICENSE-MIT
     - LICENSE-APACHE
-    - THIRDPARTY.yml
-  summary: High-performance LOWESS smoothing for Rust, Python, and R
+  summary: High-performance LOWESS smoothing associated bindings
+  description: |
+    Fast, efficient, and robust Locally Weighted Scatterplot Smoothing (LOWESS)
+    implementation in Rust with bindings for Python, R, and C++.
 
 extra:
   recipe-maintainers:
