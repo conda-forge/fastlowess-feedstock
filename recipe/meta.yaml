@@ -127,10 +127,9 @@ about:
   license_file:
     - LICENSE-MIT
     - LICENSE-APACHE
-  summary: High-performance LOWESS smoothing associated bindings
-  description: |
-    Fast, efficient, and robust Locally Weighted Scatterplot Smoothing (LOWESS)
-    implementation in Rust with bindings for Python, R, and C++.
+  summary: High-performance LOWESS smoothing
+  description: The fastest, most robust, and most feature-complete language-agnostic LOWESS (Locally Weighted Scatterplot Smoothing) implementation.
+  documentation: https://lowess.readthedocs.io/
 
 extra:
   recipe-maintainers:

@@ -7,7 +7,7 @@ Home: <https://github.com/thisisamirv/lowess-project>
 
 Package license: MIT AND Apache-2.0
 
-Summary: High-performance LOWESS smoothing for Rust, Python, and R
+Summary: High-performance LOWESS smoothing
 
 * `fastlowess`: python binding
 * `r-rfastlowess`: R binding
@@ -130,51 +130,40 @@ Current release info
 | [![Conda Recipe](https://img.shields.io/badge/recipe-libfastlowess-green.svg)](https://anaconda.org/conda-forge/libfastlowess) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/libfastlowess.svg)](https://anaconda.org/conda-forge/libfastlowess) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/libfastlowess.svg)](https://anaconda.org/conda-forge/libfastlowess) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/libfastlowess.svg)](https://anaconda.org/conda-forge/libfastlowess) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-rfastlowess-green.svg)](https://anaconda.org/conda-forge/r-rfastlowess) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/r-rfastlowess.svg)](https://anaconda.org/conda-forge/r-rfastlowess) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/r-rfastlowess.svg)](https://anaconda.org/conda-forge/r-rfastlowess) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/r-rfastlowess.svg)](https://anaconda.org/conda-forge/r-rfastlowess) |
 
-Installing fastlowess
-=====================
+Installing
+==========
 
-Installing `fastlowess` from the `conda-forge` channel can be achieved by adding `conda-forge` to your channels with:
+Installing from the `conda-forge` channel can be achieved by adding `conda-forge` to your channels with:
 
 ```
 conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `fastlowess` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, the package can be installed with `conda`:
 
 ```
+# Python
 conda install fastlowess
+
+# R
+conda install r-rfastlowess
+
+# C++
+conda install libfastlowess
 ```
 
 or with `mamba`:
 
 ```
+# Python
 mamba install fastlowess
-```
 
-It is possible to list all of the versions of `fastlowess` available on your platform with `conda`:
+# R
+mamba install r-rfastlowess
 
-```
-conda search fastlowess --channel conda-forge
-```
-
-or with `mamba`:
-
-```
-mamba search fastlowess --channel conda-forge
-```
-
-Alternatively, `mamba repoquery` may provide more information:
-
-```
-# Search all versions available on your platform:
-mamba repoquery search fastlowess --channel conda-forge
-
-# List packages depending on `fastlowess`:
-mamba repoquery whoneeds fastlowess --channel conda-forge
-
-# List dependencies of `fastlowess`:
-mamba repoquery depends fastlowess --channel conda-forge
+# C++
+mamba install libfastlowess
 ```
 
 About conda-forge
