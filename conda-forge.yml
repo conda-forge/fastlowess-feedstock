@@ -3,4 +3,3 @@ github:
   tooling_branch_name: main
 conda_build:
   error_overlinking: true
-conda_forge_output_validation: false
