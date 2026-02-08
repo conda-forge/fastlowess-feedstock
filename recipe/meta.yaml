@@ -10,7 +10,7 @@ package:
 # ==============================================================================
 source:
   url: https://github.com/thisisamirv/lowess-project/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 38fd93740a627ba1f0b8878afa277b13a9c58827b50cb7fb32c7b6e8c51f0dc5
+  sha256: 2ef7cf5f4ba65352490c91719229fe25e0f9bdac6b633524b8f6abd903bcaadc
 
 build:
   number: 0
