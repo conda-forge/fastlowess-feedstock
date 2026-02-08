@@ -1,5 +1,5 @@
 {% set name = "fastlowess" %}
-{% set version = "0.99.10" %}
+{% set version = "1.0.0" %}
 
 package:
   name: {{ name|lower }}
@@ -10,7 +10,7 @@ package:
 # ==============================================================================
 source:
   url: https://github.com/thisisamirv/lowess-project/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 27f43850127f491516976445a72f414f80f96b4bf3ca8bca116d5fa5e4114dc6
+  sha256: 2ef7cf5f4ba65352490c91719229fe25e0f9bdac6b633524b8f6abd903bcaadc
 
 build:
   number: 0
@@ -127,10 +127,9 @@ about:
   license_file:
     - LICENSE-MIT
     - LICENSE-APACHE
-  summary: High-performance LOWESS smoothing associated bindings
-  description: |
-    Fast, efficient, and robust Locally Weighted Scatterplot Smoothing (LOWESS)
-    implementation in Rust with bindings for Python, R, and C++.
+  summary: High-performance LOWESS smoothing
+  description: The fastest, most robust, and most feature-complete language-agnostic LOWESS (Locally Weighted Scatterplot Smoothing) implementation.
+  doc_url: https://lowess.readthedocs.io/
 
 extra:
   recipe-maintainers:
