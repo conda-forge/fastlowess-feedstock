@@ -1,5 +1,5 @@
 {% set name = "fastlowess" %}
-{% set version = "1.0.0" %}
+{% set version = "1.2.0" %}
 
 package:
   name: {{ name|lower }}
@@ -10,7 +10,7 @@ package:
 # ==============================================================================
 source:
   url: https://github.com/thisisamirv/lowess-project/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 2ef7cf5f4ba65352490c91719229fe25e0f9bdac6b633524b8f6abd903bcaadc
+  sha256: 25ec5b513844aa6836b405a2fc5a7723dc4caaf5bdc196935fcad70dbc3fc02c
 
 build:
   number: 0
@@ -41,12 +41,16 @@ outputs:
       skip: true  # [win]
       missing_dso_whitelist:
         - "*/libR.so"
-      script:
-        - cd bindings/r
+      script: |
+        cd bindings/r
+        # Patch out unused BiocGenerics dependency
+        sed '/Imports: BiocGenerics/d' DESCRIPTION > DESCRIPTION.tmp && mv DESCRIPTION.tmp DESCRIPTION
+        sed '/importFrom(BiocGenerics,normalize)/d' NAMESPACE > NAMESPACE.tmp && mv NAMESPACE.tmp NAMESPACE
+        sed '/@importFrom BiocGenerics normalize/d' R/rfastlowess-package.R > rfastlowess-package.R.tmp && mv rfastlowess-package.R.tmp R/rfastlowess-package.R
         # Extract vendored dependencies before R CMD INSTALL runs configure
-        - cd src && tar --extract --xz -f vendor.tar.xz && cd ..
+        cd src && tar --extract --xz -f vendor.tar.xz && cd ..
         # Unset CARGO_BUILD_TARGET to ensure configure and cargo use the same library path
-        - unset CARGO_BUILD_TARGET && $R CMD INSTALL --build .
+        unset CARGO_BUILD_TARGET && $R CMD INSTALL --build .
     requirements:
       build:
         - {{ compiler('c') }}
@@ -65,11 +69,11 @@ outputs:
   # ----------------------------------------------------------------------------
   - name: fastlowess
     build:
-      script:
+      script: |
         # Build python package using maturin
-        - cd bindings/python
-        - $PYTHON -m pip install . -vv --no-build-isolation
-        - cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
+        cd bindings/python
+        $PYTHON -m pip install . -vv --no-build-isolation
+        cargo-bundle-licenses --format yaml --output THIRDPARTY.yml
     requirements:
       build:
         - {{ compiler('c') }}
@@ -92,21 +96,21 @@ outputs:
   # ----------------------------------------------------------------------------
   - name: libfastlowess
     build:
-      script:
-        - cd bindings/cpp
-        - cargo build --release
+      script: |
+        cd bindings/cpp
+        cargo build --release
         # Install headers and libs to PREFIX (use platform-appropriate commands)
-        - mkdir -p $PREFIX/lib  # [unix]
-        - mkdir -p $PREFIX/include  # [unix]
-        - if not exist "%PREFIX%\\Library\\lib" mkdir "%PREFIX%\\Library\\lib"  # [win]
-        - if not exist "%PREFIX%\\Library\\bin" mkdir "%PREFIX%\\Library\\bin"  # [win]
-        - if not exist "%PREFIX%\\Library\\include" mkdir "%PREFIX%\\Library\\include"  # [win]
-        - find ../../target -name "libfastlowess_cpp.so" -type f -exec cp {} $PREFIX/lib/libfastlowess.so \;  # [linux]
-        - find ../../target -name "libfastlowess_cpp.dylib" -type f -exec cp {} $PREFIX/lib/libfastlowess.dylib \;  # [osx]
-        - copy ..\\..\\target\\release\\fastlowess_cpp.dll "%PREFIX%\\Library\\bin\\fastlowess.dll"  # [win]
-        - copy ..\\..\\target\\release\\fastlowess_cpp.dll.lib "%PREFIX%\\Library\\lib\\fastlowess.lib"  # [win]
-        - cp include/fastlowess.h $PREFIX/include/  # [unix]
-        - copy include\\fastlowess.h "%PREFIX%\\Library\\include\\"  # [win]
+        mkdir -p $PREFIX/lib  # [unix]
+        mkdir -p $PREFIX/include  # [unix]
+        if not exist "%PREFIX%\\Library\\lib" mkdir "%PREFIX%\\Library\\lib"  # [win]
+        if not exist "%PREFIX%\\Library\\bin" mkdir "%PREFIX%\\Library\\bin"  # [win]
+        if not exist "%PREFIX%\\Library\\include" mkdir "%PREFIX%\\Library\\include"  # [win]
+        find ../../target -name "libfastlowess_cpp.so" -type f -exec cp {} $PREFIX/lib/libfastlowess.so \;  # [linux]
+        find ../../target -name "libfastlowess_cpp.dylib" -type f -exec cp {} $PREFIX/lib/libfastlowess.dylib \;  # [osx]
+        copy ..\\..\\target\\release\\fastlowess_cpp.dll "%PREFIX%\\Library\\bin\\fastlowess.dll"  # [win]
+        copy ..\\..\\target\\release\\fastlowess_cpp.dll.lib "%PREFIX%\\Library\\lib\\fastlowess.lib"  # [win]
+        cp include/fastlowess.h $PREFIX/include/  # [unix]
+        copy include\\fastlowess.h "%PREFIX%\\Library\\include\\"  # [win]
     requirements:
       build:
         - {{ compiler('c') }}
