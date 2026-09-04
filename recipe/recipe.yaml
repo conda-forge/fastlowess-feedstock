@@ -1,5 +1,5 @@
 context:
-  version: "3.2.0"
+  version: "3.2.1"
 
 # ==============================================================================
 # Source Configuration
@@ -10,7 +10,7 @@ recipe:
 
 source:
   url: https://github.com/thisisamirv/lowess-project/archive/v${{ version }}.tar.gz
-  sha256: 2cb652a804ea5aaac7fc3a37e2f7a744451f84b8ec21ab6eade25fb614b0822a
+  sha256: 418d0620a1fcf9ef81910fc89d891edccb123bebc3dd07b359933e42801043e1
 
 build:
   number: 0
