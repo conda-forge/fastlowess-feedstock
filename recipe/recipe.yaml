@@ -167,8 +167,21 @@ about:
     - LICENSE-MIT
     - LICENSE-APACHE
   summary: High-performance LOWESS smoothing
-  description: The fastest, most robust, and most feature-complete language-agnostic LOWESS (Locally Weighted Scatterplot Smoothing) implementation.
-  documentation: https://lowess.readthedocs.io/
+  description: |
+    The fastest, most robust, and most feature-complete language-agnostic LOWESS (Locally Weighted Scatterplot Smoothing) implementation.
+
+    FastLowess is a native implementation of LOWESS (locally weighted
+    scatterplot smoothing), a one-dimensional local-polynomial method for
+    revealing trends in noisy data without fitting a global model.
+
+    This recipe provides three conda packages: fastlowess for Python,
+    r-rfastlowess for R, and libfastlowess for C++. Across supported bindings,
+    the project offers robust reweighting, configurable kernels and boundary
+    policies, parallel CPU execution, and batch, streaming, and online
+    workflows. GPU acceleration is available for supported backends.
+
+    See the project documentation for language-specific installation and usage.
+  documentation: https://thisisamirv.github.io/lowess-project/
   repository: https://github.com/thisisamirv/lowess-project
 
 extra:
