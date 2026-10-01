@@ -1,5 +1,5 @@
 context:
-  version: "3.1.0"
+  version: "4.1.0"
 
 # ==============================================================================
 # Source Configuration
@@ -10,10 +10,10 @@ recipe:
 
 source:
   url: https://github.com/thisisamirv/lowess-project/archive/v${{ version }}.tar.gz
-  sha256: 610a6af65a3e8eaa5483332c256e7ce6c3fe2b7ac3ec0f04e08ecd70bf6abe0f
+  sha256: ec0e99ac8f53ad80105eb47891569298e1e02d4068b6be89ab248e56cddbc8fa
 
 build:
-  number: 0
+  number: 1
 
 # ==============================================================================
 # Multi-Output Package Definitions (R, Python, C++)
