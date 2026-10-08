@@ -59,8 +59,12 @@ outputs:
             - make
       host:
         - r-base >=4.4
+        - r-digest
+        - r-jsonlite
       run:
         - r-base >=4.4
+        - r-digest
+        - r-jsonlite
     tests:
       - r:
           libraries:
